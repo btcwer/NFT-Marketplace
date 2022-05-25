@@ -53,12 +53,14 @@ const Home = () => {
         try {
           const artTokenContract = new web3.eth.Contract(
             ArtToken.abi,
-            ArtToken.networks[networkId].address
+            //ArtToken.networks[networkId].address
+            "0xe05926A3f78A6dB505634D76B23C7398bA8aF039"
           );
           // console.log("Contract: ", artTokenContract);
           const marketplaceContract = new web3.eth.Contract(
             ArtMarketplace.abi,
-            ArtMarketplace.networks[networkId].address
+            //ArtMarketplace.networks[networkId].address
+            "0xd158cF0e71B159C30b80e6805079E109220c4dBD"
           );
           const totalSupply = await artTokenContract.methods
             .totalSupply()
