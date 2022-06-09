@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Web3 from "web3";
 
 import { Card as MuiCard } from "@material-ui/core";
 import Chip from "@material-ui/core/Chip";
@@ -13,6 +12,7 @@ import CardActionArea from "@material-ui/core/CardActionArea";
 
 import { useStyles } from "./styles.js";
 import { ReactComponent as EthereumLogo } from "../../assets/ethereum_logo.svg";
+import Web3 from "web3";
 
 const Card = ({ tokenId, name, image, price, owner, isForSale }) => {
   const classes = useStyles();
@@ -37,12 +37,14 @@ const Card = ({ tokenId, name, image, price, owner, isForSale }) => {
               >
                 {name}
               </Typography>
-              <Chip
-                size="small"
-                disabled={true}
-                label="Selling"
-                className={classes.badge}
-              />
+              {isForSale && (
+                <Chip
+                  size="small"
+                  //disabled={true}
+                  label="Selling"
+                  className={classes.badge}
+                />
+              )}
             </div>
             <Typography variant="h6" className={classes.price}>
               <SvgIcon
@@ -50,7 +52,7 @@ const Card = ({ tokenId, name, image, price, owner, isForSale }) => {
                 viewBox="0 0 400 426.6"
                 titleAccess="ETH"
               />
-              <span>{Web3.utils.fromWei(String(price), "ether")}.120000</span>
+              <span>{Web3.utils.fromWei(String(price), "ether")}</span>
             </Typography>
             <Divider className={classes.divider} light />
             <Typography
