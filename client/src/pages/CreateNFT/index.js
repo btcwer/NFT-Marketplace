@@ -128,6 +128,8 @@ const CreateNFT = () => {
               onChange={handleInputChange}
               fullWidth
             />
+            
+            {/*
             <TextField
               label="price"
               name="price"
@@ -139,6 +141,8 @@ const CreateNFT = () => {
               }}
               fullWidth
             />
+            */}
+            
 
             <Button variant="contained" color="primary" type="submit">
               Submit
