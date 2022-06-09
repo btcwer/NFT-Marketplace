@@ -19,7 +19,7 @@ const Item = () => {
   const marketplaceContract = useSelector(
     (state) => state.allNft.marketplaceContract
   );
-  const account = useSelector((state) => state.allNft.account);
+  let account = useSelector((state) => state.allNft.account);
   let nft = useSelector((state) => state.nft);
   let nftItem = useSelector((state) =>
     state.allNft.nft.filter((nft) => nft.tokenId === nftId)
@@ -37,6 +37,11 @@ const Item = () => {
     isSold,
   } = nft;
   const dispatch = useDispatch();
+  const priceInEther = price? Web3.utils.fromWei(String(price), "ether"): price 
+
+  function handlePrice(e) {
+    setListPrice(e.target.value)
+  }
 
   useEffect(() => {
     if (nftId && nftId !== "" && nftItem) dispatch(selectedNft(nftItem[0]));
@@ -44,6 +49,10 @@ const Item = () => {
       dispatch(removeSelectedNft());
     };
   }, [nftId]);
+
+  const [listPrice, setListPrice] = useState(price)
+
+  console.info('price is', price, listPrice)
 
   async function putForSale(id, price) {
     try {
@@ -53,7 +62,7 @@ const Item = () => {
       // await artTokenContract.methods.approve(marketAddress, items[itemIdex].tokenId).send({from: accounts[0]});
 
       const receipt = await marketplaceContract.methods
-        .putItemForSale(id, price)
+        .putItemForSale(id, Web3.utils.toWei(price, 'ether'))
         .send({ gas: 210000, from: account });
       console.log(receipt);
     } catch (error) {
@@ -75,6 +84,7 @@ const Item = () => {
     }
   }
 
+
   return (
     <div className={classes.pageItem}>
       {Object.keys(nft).length === 0 ? (
@@ -90,7 +100,7 @@ const Item = () => {
             <Grid container 
               spacing={0} 
               alignItems="center"
-              justify="center"
+              justifyContent="center"
             >
               <Grid item md={7} sm={7} xs={12}>
                 <figure> 
@@ -137,20 +147,23 @@ const Item = () => {
                     name="price"
                     variant="filled"
                     margin="dense"
-                    defaultValue={Web3.utils.fromWei(String(price), "ether")}
+                    //defaultValue={Web3.utils.fromWei(String(price), "ether")}
+                    defaultValue={priceInEther}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">ETH</InputAdornment>
                       ),
                     }}
                     fullWidth
-                    disabled
+                    disabled={isForSale || owner !== account}
+                    value={listPrice}
+                    onChange={handlePrice}
                   />
                   {owner === account && !isForSale && (
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => putForSale(tokenId, 200)}
+                      onClick={() => putForSale(tokenId, listPrice)}
                     >
                       Sell
                     </Button>
@@ -159,7 +172,7 @@ const Item = () => {
                     <Button
                       variant="contained"
                       color="primary"
-                      onClick={() => buy(saleId, 200)}
+                      onClick={() => buy(saleId, price)}
                     >
                       Buy
                     </Button>
