@@ -10,6 +10,7 @@ import { api } from "../../services/api";
 
 import ArtMarketplace from "../../contracts/ArtMarketplace.json";
 import ArtToken from "../../contracts/ArtToken.json";
+import {NFT_ADDRESS, EXCHANGE_ADDRESS, CONTRACTS_OWNER_ADDRESS} from "../../utils/constants"
 
 import {
   setNft,
@@ -54,13 +55,13 @@ const Home = () => {
           const artTokenContract = new web3.eth.Contract(
             ArtToken.abi,
             //ArtToken.networks[networkId].address
-            "0xe05926A3f78A6dB505634D76B23C7398bA8aF039"
+            NFT_ADDRESS
           );
           // console.log("Contract: ", artTokenContract);
           const marketplaceContract = new web3.eth.Contract(
             ArtMarketplace.abi,
             //ArtMarketplace.networks[networkId].address
-            "0xd158cF0e71B159C30b80e6805079E109220c4dBD"
+            EXCHANGE_ADDRESS
           );
           const totalSupply = await artTokenContract.methods
             .totalSupply()
@@ -114,6 +115,7 @@ const Home = () => {
                 price: item.price,
                 isSold: item.isSold,
               };
+              console.info('read price = ', item.price)
             }
           }
 
@@ -142,6 +144,7 @@ const Home = () => {
   console.log("Nft :", nft);
 
   const nftItem = useSelector((state) => state.allNft.nft);
+  const account = useSelector((state) => state.allNft.account);
 
   return (
     <div className={classes.homepage}>
@@ -166,11 +169,13 @@ const Home = () => {
           <Grid item xs={6} className={classes.main}>
             <img src={galerie} alt="galerie" />
             <Typography>A decentralized NFT marketplace where you can expose your art.</Typography>
-            <Link to="/create-nft">
-              <Button variant="contained" color="primary" disableElevation>
-                Mint your art
-              </Button>
-            </Link>
+            {account === CONTRACTS_OWNER_ADDRESS && (
+              <Link to="/create-nft">
+                <Button variant="contained" color="primary" disableElevation>
+                  Mint your art
+                </Button>
+              </Link>
+            )}
           </Grid>
           <Grid item xs={3}>
             <Grid container spacing={0}>
